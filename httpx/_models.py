@@ -1,4 +1,3 @@
-import cgi
 import datetime
 import email.message
 import json as jsonlib
@@ -46,6 +45,7 @@ from ._utils import (
     normalize_header_key,
     normalize_header_value,
     obfuscate_sensitive_headers,
+    parse_content_type_charset,
     parse_header_links,
 )
 
@@ -596,11 +596,7 @@ class Response:
         if content_type is None:
             return None
 
-        _, params = cgi.parse_header(content_type)
-        if "charset" not in params:
-            return None
-
-        return params["charset"].strip("'\"")
+        return parse_content_type_charset(content_type)
 
     def _get_content_decoder(self) -> ContentDecoder:
         """
